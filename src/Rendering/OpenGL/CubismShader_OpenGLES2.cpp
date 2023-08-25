@@ -13,6 +13,10 @@
 #include <Windows.h>
 #endif
 
+#ifdef CSM_TARGET_JUCE_GL
+using namespace juce::gl;
+#endif
+
 #define CSM_FRAGMENT_SHADER_FP_PRECISION_HIGH "highp"
 #define CSM_FRAGMENT_SHADER_FP_PRECISION_MID "mediump"
 #define CSM_FRAGMENT_SHADER_FP_PRECISION_LOW "lowp"

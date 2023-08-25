@@ -7,6 +7,10 @@
 
 #include "CubismOffscreenSurface_OpenGLES2.hpp"
 
+#ifdef CSM_TARGET_JUCE_GL
+using namespace juce::gl;
+#endif
+
 //------------ LIVE2D NAMESPACE ------------
 namespace Live2D { namespace Cubism { namespace Framework { namespace Rendering {
 
