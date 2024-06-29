@@ -466,15 +466,43 @@ static const csmChar* FragShaderSrcMaskInvertedPremultipliedAlphaTegra =
 
 void CubismShader_OpenGLES2::ReleaseShaderProgram()
 {
+    // 削除対象のシェーダプログラムのIDのリストを作成する
+    csmVector<GLuint> shaderProgramsToDelete;
     for (csmUint32 i = 0; i < _shaderSets.GetSize(); i++)
     {
-        if (_shaderSets[i]->ShaderProgram)
+        bool addToDeleteList = true;
+
+        // 削除対象のシェーダプログラムのIDの重複を避ける
+        for (csmUint32 j = 0; j < shaderProgramsToDelete.GetSize(); j++)
         {
-            glDeleteProgram(_shaderSets[i]->ShaderProgram);
-            _shaderSets[i]->ShaderProgram = 0;
-            CSM_DELETE(_shaderSets[i]);
+            if (shaderProgramsToDelete[j] == _shaderSets[i]->ShaderProgram)
+            {
+                addToDeleteList = false;
+                continue;
+            }
+        }
+
+        if (addToDeleteList)
+        {
+            shaderProgramsToDelete.PushBack(_shaderSets[i]->ShaderProgram);
         }
     }
+
+    // シェーダプログラムの削除処理を実行する
+    for (csmUint32 i = 0; i < shaderProgramsToDelete.GetSize(); i++)
+    {
+        if (shaderProgramsToDelete[i])
+        {
+            glDeleteProgram(shaderProgramsToDelete[i]);
+        }
+    }
+
+    // シェーダプログラムの情報を削除する
+    for (csmUint32 i = 0; i < _shaderSets.GetSize(); i++)
+    {
+        CSM_DELETE(_shaderSets[i]);
+    }
+    _shaderSets.Clear();
 }
 
 CubismShader_OpenGLES2::CubismShader_OpenGLES2()
